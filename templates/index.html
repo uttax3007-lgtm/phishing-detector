@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Check a URL for phishing indicators using a machine-learning classifier.">
+  <meta name="theme-color" content="#f4f1eb">
+  <title>PhishGuard — URL inspection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="PhishGuard home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 3.5 26 7v8.2c0 6.1-4.2 10.8-10 13.3C10.2 26 6 21.3 6 15.2V7l10-3.5Z" stroke="currentColor" stroke-width="1.8"/>
+            <path d="m11.5 15.8 3 3 6.3-6.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="brand-name">PhishGuard<span class="brand-period">.</span></span>
+      </a>
+      <div class="header-note"><span class="status-dot"></span> URL threat screening</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p class="eyebrow">A practical first check</p>
+        <h1>Look closer<br>before you <em>click.</em></h1>
+        <p class="intro-copy">Inspect a web address for patterns commonly associated with phishing. Paste the URL below to run it through the project's machine-learning model.</p>
+      </section>
+
+      <section class="workspace" aria-labelledby="check-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">01 / URL inspection</p>
+            <h2 id="check-title">Check a website address</h2>
+          </div>
+          <span class="panel-index">PHG—001</span>
+        </div>
+
+        <form action="/" method="post" class="url-form">
+          <label for="url">Website URL</label>
+          <div class="input-row">
+            <span class="input-prefix" aria-hidden="true">↗</span>
+            <input
+              type="url"
+              name="url"
+              id="url"
+              placeholder="https://example.com"
+              value="{{ url if url else '' }}"
+              autocomplete="url"
+              inputmode="url"
+              required
+              aria-describedby="url-help"
+            >
+            <button type="submit">
+              Analyse URL <span aria-hidden="true">→</span>
+            </button>
+          </div>
+          <p id="url-help" class="field-help">Enter the complete address, including https:// or http://.</p>
+        </form>
+
+        {% if xx is defined and xx|float >= 0 %}
+          {% set safe_score = (xx|float * 100)|round|int %}
+          {% if xx|float >= 0.5 %}
+            <section class="result result-safe" aria-live="polite">
+              <div class="result-topline">
+                <span class="result-label"><span class="result-dot"></span> MODEL ASSESSMENT</span>
+                <span class="result-tag">Lower risk indicators</span>
+              </div>
+              <h3>No strong phishing signal detected.</h3>
+              <p class="result-description">The model classified this URL as likely legitimate based on the features it evaluated. This is not a guarantee that the website is safe.</p>
+              <div class="score-row">
+                <span>Model safe-class score</span><strong>{{ safe_score }}<small>%</small></strong>
+              </div>
+              <div class="score-track"><span style="width: {{ safe_score }}%"></span></div>
+            </section>
+          {% else %}
+            <section class="result result-risk" aria-live="polite">
+              <div class="result-topline">
+                <span class="result-label"><span class="result-dot"></span> MODEL ASSESSMENT</span>
+                <span class="result-tag">Potential phishing risk</span>
+              </div>
+              <h3>Suspicious patterns were detected.</h3>
+              <p class="result-description">The model classified this URL as potentially malicious. Avoid entering passwords, payment details or personal information on this website.</p>
+              <div class="score-row">
+                <span>Model safe-class score</span><strong>{{ safe_score }}<small>%</small></strong>
+              </div>
+              <div class="score-track"><span style="width: {{ safe_score }}%"></span></div>
+            </section>
+          {% endif %}
+          <div class="checked-url">
+            <span>URL checked</span>
+            <p>{{ url }}</p>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="guidance">
+        <div class="guidance-number">02</div>
+        <div>
+          <h2>Use the result as a signal, not a guarantee.</h2>
+          <p>This tool provides a machine-learning assessment of URL characteristics. Threats can change quickly, and a legitimate-looking URL may still lead to harmful content. When in doubt, navigate to a service through its official website rather than a link in a message.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>PHISHGUARD <span class="footer-separator">/</span> PHISHING URL DETECTION</span>
+      <span>Machine-learning based URL screening</span>
+    </footer>
+  </div>
+</body>
+</html>
